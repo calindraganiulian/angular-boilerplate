@@ -1,0 +1,16 @@
+<div class="container mt-4">
+  <h1>Listă de Postări</h1>
+
+  <!-- Afișăm o listă de postări -->
+  <ul class="list-group">
+    <!-- *ngFor iterează prin array-ul 'posts' din componenta .ts -->
+    <li *ngFor="let post of posts" class="list-group-item">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ post.title }}</h5>
+        <!-- Butonul de ștergere -->
+        <button (click)="deletePost(post.id)" class="btn btn-danger btn-sm">Șterge</button>
+      </div>
+      <p class="mb-1">{{ post.body }}</p>
+    </li>
+  </ul>
+</div>
