@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, Post } from '../../services/api.service';
+import { WINDOW } from '../../tokens/window.token';
 
 @Component({
   selector: 'app-posts',
@@ -18,13 +19,29 @@ export class Posts implements OnInit {
   editingPostId: number | null = null;
   editedPost: Post | null = null;
 
-  // Injectăm ApiService prin constructor (Dependency Injection)
-  constructor(private apiService: ApiService) {}
+  // Mod modern de a injecta dependențe, folosind funcția `inject`
+  private apiService = inject(ApiService);
+  // Injectăm obiectul `window` folosind token-ul nostru
+  private window = inject(WINDOW);
 
   // Această metodă este un "lifecycle hook" și se execută o singură dată,
   // la inițializarea componentei.
   ngOnInit(): void {
+    this.logWindowSize();
     this.loadPosts();
+  }
+
+  // Metodă nouă care folosește obiectul `window` injectat
+  logWindowSize(): void {
+    // Verificăm dacă `window` chiar există (bună practică)
+    if (this.window && this.window.innerWidth) {
+      console.log('SUCCESS: Am citit dimensiunile ferestrei folosind InjectionToken!', {
+        width: this.window.innerWidth,
+        height: this.window.innerHeight,
+      });
+    } else {
+      console.log('Window object nu este disponibil în acest context.');
+    }
   }
 
   loadPosts(): void {
@@ -58,6 +75,7 @@ export class Posts implements OnInit {
     };
 
     this.apiService.createPost(postToCreate).subscribe(createdPost => {
+      console.log('Postare creată (cu timestamp de la interceptor):', createdPost);
       this.posts.unshift(createdPost); // Adăugăm postarea nouă la începutul listei
       this.newPost = { title: '', body: '' }; // Resetăm formularul
     });
