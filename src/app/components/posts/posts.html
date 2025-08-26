@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <!-- Formular pentru adăugare -->
+  <div class="mb-4 card">
+    <div class="card-body">
+      <h2 class="card-title">Adaugă o Postare Nouă</h2>
+      <!-- (ngSubmit) se declanșează la submit-ul formularului -->
+      <form (ngSubmit)="onAddPost()">
+        <div class="form-group">
+          <label for="title">Titlu</label>
+          <!-- [(ngModel)] realizează legătura bidirecțională (two-way binding) -->
+          <input type="text" id="title" class="form-control" [(ngModel)]="newPost.title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="body">Conținut</label>
+          <textarea id="body" class="form-control" [(ngModel)]="newPost.body" name="body" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Adaugă Postare</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Afișăm o listă de postări -->
+  <ul class="list-group">
+    <!-- *ngFor iterează prin array-ul 'posts' din componenta .ts -->
+    <li *ngFor="let post of posts; let i = index" class="list-group-item">
+      <!-- Mod de vizualizare normal -->
+      <div *ngIf="editingPostId !== post.id">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ post.title }}</h5>
+          <div>
+            <!-- Butonul de modificare -->
+            <button (click)="onEdit(post)" class="btn btn-secondary btn-sm mr-2">Modifică</button>
+            <!-- Butonul de ștergere -->
+            <button (click)="deletePost(post.id)" class="btn btn-danger btn-sm">Șterge</button>
+          </div>
+        </div>
+        <p class="mb-1">{{ post.body }}</p>
+      </div>
+
+      <!-- Mod de editare (afișat condiționat) -->
+      <form *ngIf="editingPostId === post.id && editedPost" (ngSubmit)="onUpdatePost()">
+        <div class="form-group">
+          <input type="text" class="form-control" [(ngModel)]="editedPost.title" name="editTitle-{{i}}" required>
+        </div>
+        <textarea class="form-control mb-2" rows="3" [(ngModel)]="editedPost.body" name="editBody-{{i}}" required></textarea>
+        <button type="submit" class="btn btn-success btn-sm mr-2">Salvează</button>
+        <button type="button" (click)="onCancelEdit()" class="btn btn-light btn-sm">Anulează</button>
+      </form>
+    </li>
+  </ul>
+</div>
